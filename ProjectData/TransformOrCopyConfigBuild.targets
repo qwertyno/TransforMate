@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0"
+			xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ConfigFolder>[Configurations]</ConfigFolder>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TransformXml" AssemblyFile="..\..\[Build]\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll"  />
+
+
+  <Target Name="CopyOrTransform">
+    <Message Condition="!Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+      Text="Copying: $(configname).Base.config to $(Destination)$(configname).config" Importance="high" />
+    <Copy Condition="!Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+          SourceFiles="$(ConfigFolder)\$(configname).Base.config"
+          DestinationFiles="$(Destination)$(configname).config"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+    <Message Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+      Text="Transforming: $(configname).$(Configuration).config to $(Destination)$(configname).config" Importance="high" />
+    <TransformXml Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+      Source="$(ConfigFolder)\$(configname).Base.config"
+              Transform="$(ConfigFolder)\$(configname).$(Configuration).config"
+              Destination="$(Destination)$(configname).config" />
+  </Target>
+
+  <Target Name="CopyIfExists">
+    <Message Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).$(FileExtension)')"
+      Text="Copying: $(configname).$(Configuration).$(FileExtension)" Importance="high" />
+    <Copy Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).$(FileExtension)')"
+          SourceFiles="$(ConfigFolder)\$(configname).$(Configuration).$(FileExtension)"
+          DestinationFiles="$(configname).$(FileExtension)"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+
+  <Target Name="SetupConfigurations" BeforeTargets="BeforeBuild;Build;Rebuild">
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=connectionStrings"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=EPiServerLog"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=Web"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=appSettings"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=Mediachase.Search;Destination=Configs\"/>
+    <MSBuild Targets="CopyIfExists" Projects="$(MSBuildProjectFile)" Properties="configname=EPiServerCommerceLicense;FileExtension=config" />
+    <MSBuild Targets="CopyIfExists" Projects="$(MSBuildProjectFile)" Properties="configname=License;FileExtension=config" />
+    <MSBuild Targets="CopyIfExists" Projects="$(MSBuildProjectFile)" Properties="configname=robots;FileExtension=txt"/>
+  </Target>
+</Project>

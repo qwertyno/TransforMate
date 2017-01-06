@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0"
+			xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ConfigFolder>[Configurations]</ConfigFolder>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(SolutionDir)\[Build]\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll"  />
+
+  <Target Name="CopyOrTransform">
+    <Message Condition="!Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+             Text="Copying: $(configname).Base.config"
+             Importance="high" />
+    <Copy Condition="!Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+          SourceFiles="$(ConfigFolder)\$(configname).Base.config"
+          DestinationFiles="$(configname).config"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+    <Message Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+             Text="Transforming: $(configname).$(Configuration).config"
+             Importance="high" />
+    <TransformXml Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).config')"
+                  Source="$(ConfigFolder)\$(configname).Base.config"
+                  Transform="$(ConfigFolder)\$(configname).$(Configuration).config"
+                  Destination="$(configname).config" />
+  </Target>
+
+  <Target Name="CopyIfExist">
+    <Message Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).$(extension)')"
+      Text="Copying: $(configname).$(Configuration).$(extension)" Importance="high" />
+    <Copy Condition="Exists('$(ConfigFolder)\$(configname).$(Configuration).$(extension)')"
+          SourceFiles="$(ConfigFolder)\$(configname).$(Configuration).$(extension)"
+          DestinationFiles="$(configname).$(extension)"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+
+  <Target Name="SetupConfigurations" BeforeTargets="BeforeBuild;Build;Rebuild">
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=Web"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=ConnectionStrings"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=episerver"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=EPiServerFramework"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=EPiServerLog"/>
+    <MSBuild Targets="CopyOrTransform" Projects="$(MSBuildProjectFile)" Properties="configname=FileSummary"/>
+    <MSBuild Targets="CopyIfExist" Projects="$(MSBuildProjectFile)" Properties="configname=License;extension=config"/>
+    <MSBuild Targets="CopyIfExist" Projects="$(MSBuildProjectFile)" Properties="configname=robots;extension=txt"/>
+  </Target>
+
+  <!--If you add folders, remember to update the nuspec-file as well. Otherwise, the folders will not be deployed by Octopus.-->
+  <Target Name="CustomCollectFiles">
+    <ItemGroup>
+      <CustomFolders Include="Frontend\**\*"/>
+      <CustomFolders Include="FrameWork\**\*"/>
+      <CustomFolders Include="static\**\*"/>
+      <CustomFolders Include="aarsrapport\**\*"/>
+      <FilesForPackagingFromProject Include="%(CustomFolders.Identity)">
+        <DestinationRelativePath>%(CustomFolders.Identity)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
+</Project>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<ConfigFolder>$(ProjectDir)[Configurations]</ConfigFolder>
+	</PropertyGroup>
+
+	<UsingTask TaskName="TransformXml" AssemblyFile="$(SolutionDir)[Build]\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll"  />
+
+	<ItemGroup>
+		<ConfigName Include="Web">
+			<Ext>config</Ext>
+		</ConfigName>
+		<ConfigName Include="ConnectionStrings">
+			<Ext>config</Ext>
+		</ConfigName>
+		<ConfigName Include="EPiServer">
+			<Ext>config</Ext>
+		</ConfigName>
+		<ConfigName Include="EPiServerFramework">
+			<Ext>config</Ext>
+		</ConfigName>
+		<ConfigName Include="EPiServerLog">
+			<Ext>config</Ext>
+		</ConfigName>
+	</ItemGroup>
+
+	<Target Name="CopyOrTransformConfig" BeforeTargets="BeforeBuild;Build;Rebuild">
+		<Message Condition="!Exists('$(ConfigFolder)\%(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)')"
+		  Text="Copying [$(ProjectName)]: %(ConfigName.Identity).%(ConfigName.Ext)" Importance="high" />
+		<Copy Condition="!Exists('$(ConfigFolder)\%(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)')"
+				SourceFiles="$(ConfigFolder)\%(ConfigName.Identity).Base.%(ConfigName.Ext)"
+				DestinationFiles="%(ConfigName.Identity).%(ConfigName.Ext)"
+				OverwriteReadOnlyFiles="true"
+				SkipUnchangedFiles="false" />
+		<Message Condition="Exists('$(ConfigFolder)\%(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)')"
+		  Text="Transforming [$(ProjectName)]: %(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)" Importance="high" />
+		<TransformXml Condition="Exists('$(ConfigFolder)\%(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)')"
+		  Source="$(ConfigFolder)\%(ConfigName.Identity).Base.%(ConfigName.Ext)"
+					 Transform="$(ConfigFolder)\%(ConfigName.Identity).$(Configuration).%(ConfigName.Ext)"
+					 Destination="%(ConfigName.Identity).%(ConfigName.Ext)" />
+	</Target>
+</Project>

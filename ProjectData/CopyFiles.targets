@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CustomCollectFiles" >
+		<Message Text="Copying extra files from $(MSBuildProjectDirectory)\[Files]\$(Configuration)\**\*" Importance="high"/>
+		<ItemGroup>
+			<_CustomFiles Include="[Files]\$(Configuration)\**\*" />
+			<FilesForPackagingFromProject  Include="%(_CustomFiles.Identity)">
+				<DestinationRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+			</FilesForPackagingFromProject>
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup>
+		<ConfigSpecificFiles Include="$(MSBuildProjectDirectory)\[Files]\$(Configuration)\**\*" />
+	</ItemGroup>
+
+	<Target Name="CopyConfigSpecificFiles" BeforeTargets="BeforeBuild;Build;Rebuild;Deploy">
+		<Message
+		  Text="Copying [Files] [$(ProjectName)]: [$(Configuration)] %(ConfigSpecificFiles.Identity) -> %(RecursiveDir)%(Filename)%(Extension)"
+		  Importance="high" />
+		<Copy
+		  SourceFiles="%(ConfigSpecificFiles.Identity)"
+		  DestinationFiles="%(RecursiveDir)%(Filename)%(Extension)"
+		  OverwriteReadOnlyFiles="true"
+		  SkipUnchangedFiles="false" />
+	</Target>
+
+	<!--
+    <ItemGroup>
+		  <ToBinFiles Include="[Files]\ToBin\*.*" />
+	  </ItemGroup>
+
+	  <Target Name="CopyExtraFilesToBin"  BeforeTargets="BeforeBuild;Build;Rebuild;Deploy">
+		  <Message Text="Copying Bin-files @(ToBinFiles) to $(OutputPath)" Importance="high" />
+		  <Copy SourceFiles="@(ToBinFiles)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+	  </Target>
+
+
+	  <Target Name="CopyExtraFilesToPackage">
+		  <ItemGroup>
+			  <_CustomFiles Include="@(ToBinFiles)" />
+			  <FilesForPackagingFromProject  Include="%(_CustomFiles.Identity)">
+				  <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
+			  </FilesForPackagingFromProject>
+		  </ItemGroup>
+	  </Target>
+  -->
+
+</Project>
