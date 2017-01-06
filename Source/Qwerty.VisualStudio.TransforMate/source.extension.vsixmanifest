@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="TransforMate.Company.c81e03aa-df9d-4ba4-a229-78e0ed00a338" Version="1.0" Language="en-US" Publisher="Company" />
-    <DisplayName>TransforMate</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Identity Id="Qwerty.TransforMate.c81e03aa-df9d-4ba4-a229-78e0ed00a338" Version="0.0.1.0" Language="en-US" Publisher="Qwerty" />
+    <DisplayName>Qwerty.TransforMate</DisplayName>
+    <Description xml:space="preserve">Visual Studio Extention for creating and managing configuration files transformations</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
