@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TransforMate")]
+[assembly: AssemblyTitle("Qwerty.TransforMate")]
 [assembly: AssemblyDescription("Visual Studio Extention for creating and maintaining config transformations")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Qwerty")]
-[assembly: AssemblyProduct("TransforMate")]
-[assembly: AssemblyCopyright("Copyright © 2017 by Qwerty. All rights reserved")]
+[assembly: AssemblyCompany("Qwerty, John-Alex Berglund")]
+[assembly: AssemblyProduct("Qwerty.TransforMate")]
+[assembly: AssemblyCopyright("Copyright © 2017 by Qwerty, John-Alex Berglund. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
