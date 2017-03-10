@@ -16,6 +16,7 @@ Visual Studio Extention for creating and managing configuration files transforma
 5. Copy nescessary files from build to solution
 6. Nest config files
 7. Ignore debug transformations
+8. Copy VS build folder to Solution
 
 
 Hopefully this will be implemented soon.
